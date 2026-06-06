@@ -1,0 +1,1 @@
+{"error":{"code":"VALIDATION_INVALID_SCHEMA","message":"No valid columns in request body","remediation":"Ensure your request body contains valid column names for table \"teams\". Use get_schema to see available columns.","documentation_url":"https://docs.butterbase.ai/errors#validation-invalid-schema"}}

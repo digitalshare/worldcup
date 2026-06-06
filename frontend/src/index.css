@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #0a0f1d;
+  color: #e7ecf5;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* subtle pitch-stripe backdrop */
+.pitch-bg {
+  background-image:
+    radial-gradient(1200px 600px at 50% -10%, rgba(16,185,129,0.12), transparent 60%),
+    linear-gradient(180deg, #0a0f1d 0%, #0b1322 100%);
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #1e2a44; border-radius: 8px; }
