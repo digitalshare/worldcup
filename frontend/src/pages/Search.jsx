@@ -1,12 +1,9 @@
 import { useState } from "react";
 import { search } from "../lib/api";
-
-const CAT_LABEL = {
-  format: "Format", teams: "Teams", schedule: "Schedule",
-  venues: "Venues", faq: "FAQ", news: "News",
-};
+import { useT } from "../lib/i18n.jsx";
 
 export default function Search() {
+  const t = useT();
   const [q, setQ] = useState("");
   const [results, setResults] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -30,9 +27,9 @@ export default function Search() {
   return (
     <div className="mx-auto max-w-3xl space-y-5">
       <div>
-        <h1 className="text-2xl font-bold">Semantic Search</h1>
+        <h1 className="text-2xl font-bold">{t("search.title")}</h1>
         <p className="text-sm text-slate-400">
-          Natural-language search across teams, groups, the full schedule, venues and more — powered by vector embeddings.
+          {t("search.intro")}
         </p>
       </div>
 
@@ -40,17 +37,17 @@ export default function Search() {
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="e.g. matches at the Azteca, or low-ranked debutants"
+          placeholder={t("search.placeholder")}
           className="flex-1 rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm outline-none focus:border-emerald-400/50"
         />
         <button type="submit" disabled={busy}
           className="rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-emerald-950 hover:bg-emerald-400 disabled:opacity-40">
-          {busy ? "Searching…" : "Search"}
+          {busy ? t("search.searching") : t("search.search")}
         </button>
       </form>
 
       {touched && !busy && results?.length === 0 && (
-        <p className="text-slate-400">No results found. Try rephrasing your query.</p>
+        <p className="text-slate-400">{t("search.none")}</p>
       )}
 
       <div className="space-y-3">
@@ -61,7 +58,7 @@ export default function Search() {
               <div className="flex items-center gap-2">
                 {r.category && (
                   <span className="rounded-full bg-white/5 px-2 py-0.5 text-[11px] text-slate-300">
-                    {CAT_LABEL[r.category] || r.category}
+                    {t(`search.cat.${r.category}`)}
                   </span>
                 )}
                 {r.score != null && (

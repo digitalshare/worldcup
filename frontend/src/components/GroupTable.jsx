@@ -1,26 +1,28 @@
 import { Link } from "react-router-dom";
 import Flag from "./Flag.jsx";
+import { useT } from "../lib/i18n.jsx";
 
 export default function GroupTable({ letter, teams }) {
+  const t = useT();
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
       <h3 className="mb-3 flex items-center gap-2 text-lg font-bold">
         <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/20 text-sm font-extrabold text-emerald-300">
           {letter}
         </span>
-        Group {letter}
+        {t("groupTable.title", { letter })}
       </h3>
       <table className="w-full text-sm">
         <thead>
           <tr className="text-left text-[11px] uppercase tracking-wide text-slate-400">
-            <th className="pb-1 font-medium">#</th>
-            <th className="pb-1 font-medium">Team</th>
-            <th className="pb-1 text-center font-medium">P</th>
-            <th className="pb-1 text-center font-medium">W</th>
-            <th className="pb-1 text-center font-medium">D</th>
-            <th className="pb-1 text-center font-medium">L</th>
-            <th className="pb-1 text-center font-medium">GD</th>
-            <th className="pb-1 text-center font-medium">Pts</th>
+            <th className="pb-1 font-medium">{t("groupTable.rank")}</th>
+            <th className="pb-1 font-medium">{t("groupTable.team")}</th>
+            <th className="pb-1 text-center font-medium">{t("groupTable.p")}</th>
+            <th className="pb-1 text-center font-medium">{t("groupTable.w")}</th>
+            <th className="pb-1 text-center font-medium">{t("groupTable.d")}</th>
+            <th className="pb-1 text-center font-medium">{t("groupTable.l")}</th>
+            <th className="pb-1 text-center font-medium">{t("groupTable.gd")}</th>
+            <th className="pb-1 text-center font-medium">{t("groupTable.pts")}</th>
           </tr>
         </thead>
         <tbody>
@@ -46,8 +48,8 @@ export default function GroupTable({ letter, teams }) {
         </tbody>
       </table>
       <p className="mt-2 text-[11px] text-slate-500">
-        <span className="text-emerald-400">●</span> advance &nbsp;
-        <span className="text-amber-400">●</span> possible (best 3rd)
+        <span className="text-emerald-400">●</span> {t("groupTable.advance")} &nbsp;
+        <span className="text-amber-400">●</span> {t("groupTable.possible")}
       </p>
     </div>
   );

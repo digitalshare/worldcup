@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useData } from "../lib/store.jsx";
+import { useT } from "../lib/i18n.jsx";
 import Countdown from "../components/Countdown.jsx";
 import MatchCard from "../components/MatchCard.jsx";
 
@@ -16,6 +17,7 @@ function Stat({ value, label, to }) {
 export default function Home() {
   const { data, maps } = useData();
   const { venueById } = maps;
+  const t = useT();
   const now = Date.now();
   const upcoming = data.matches
     .filter((m) => new Date(m.kickoff_utc).getTime() >= now)
@@ -30,28 +32,27 @@ export default function Home() {
           <span className="rounded-full bg-white/5 px-3 py-1">🇺🇸 USA</span>
           <span className="rounded-full bg-white/5 px-3 py-1">🇨🇦 Canada</span>
           <span className="rounded-full bg-white/5 px-3 py-1">🇲🇽 Mexico</span>
-          <span className="rounded-full bg-white/5 px-3 py-1">Jun 11 – Jul 19, 2026</span>
+          <span className="rounded-full bg-white/5 px-3 py-1">{t("home.dateRange")}</span>
         </div>
         <h1 className="mt-4 text-4xl font-extrabold leading-tight sm:text-6xl">
           <span className="bg-gradient-to-r from-emerald-300 via-white to-amber-300 bg-clip-text text-transparent">
-            FIFA World Cup 2026
+            {t("home.heading")}
           </span>
         </h1>
         <p className="mt-3 max-w-2xl text-slate-300">
-          The biggest World Cup ever — 48 teams, 16 host cities, 104 matches. Your complete fan hub
-          with the full schedule, live-ready standings, squads, venues, semantic search and an AI assistant.
+          {t("home.intro")}
         </p>
         <div className="mt-6 flex flex-wrap items-center gap-6">
           <div>
-            <div className="mb-2 text-xs uppercase tracking-wide text-slate-400">Kick-off in</div>
+            <div className="mb-2 text-xs uppercase tracking-wide text-slate-400">{t("home.kickoffIn")}</div>
             <Countdown />
           </div>
           <div className="flex gap-2">
             <Link to="/schedule" className="rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-emerald-950 hover:bg-emerald-400">
-              View schedule
+              {t("home.viewSchedule")}
             </Link>
             <Link to="/chat" className="rounded-xl border border-white/15 px-4 py-2.5 text-sm font-semibold hover:bg-white/5">
-              Ask the AI
+              {t("home.askAI")}
             </Link>
           </div>
         </div>
@@ -59,17 +60,17 @@ export default function Home() {
 
       {/* Stats */}
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat value="48" label="Teams" to="/teams" />
-        <Stat value="12" label="Groups" to="/groups" />
-        <Stat value="104" label="Matches" to="/schedule" />
-        <Stat value="16" label="Venues" to="/venues" />
+        <Stat value="48" label={t("home.statTeams")} to="/teams" />
+        <Stat value="12" label={t("home.statGroups")} to="/groups" />
+        <Stat value="104" label={t("home.statMatches")} to="/schedule" />
+        <Stat value="16" label={t("home.statVenues")} to="/venues" />
       </section>
 
       {/* Next matches */}
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-xl font-bold">Upcoming matches</h2>
-          <Link to="/schedule" className="text-sm text-emerald-300 hover:underline">Full schedule →</Link>
+          <h2 className="text-xl font-bold">{t("home.upcoming")}</h2>
+          <Link to="/schedule" className="text-sm text-emerald-300 hover:underline">{t("home.fullSchedule")}</Link>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           {next.map((m) => (
@@ -81,7 +82,7 @@ export default function Home() {
       {/* News */}
       {data.news?.length > 0 && (
         <section>
-          <h2 className="mb-3 text-xl font-bold">Latest news</h2>
+          <h2 className="mb-3 text-xl font-bold">{t("home.latestNews")}</h2>
           <div className="grid gap-3 sm:grid-cols-2">
             {data.news.slice(0, 6).map((n) => (
               <a key={n.id} href={n.url} target="_blank" rel="noreferrer"

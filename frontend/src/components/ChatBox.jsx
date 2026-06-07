@@ -1,17 +1,12 @@
 import { useRef, useState, useEffect } from "react";
 import { ask } from "../lib/api";
-
-const SUGGESTIONS = [
-  "Which group is Argentina in?",
-  "What stadium hosts the final?",
-  "When does the USA play their first match?",
-  "Which cities in Mexico are hosting games?",
-  "How does the 48-team format work?",
-];
+import { useT } from "../lib/i18n.jsx";
 
 export default function ChatBox() {
+  const t = useT();
+  const suggestions = t("chat.suggestions");
   const [messages, setMessages] = useState([
-    { role: "assistant", text: "👋 Hi! I'm your World Cup 2026 assistant. Ask me about groups, fixtures, venues, the format — anything!" },
+    { role: "assistant", text: t("chat.greeting") },
   ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -27,9 +22,9 @@ export default function ChatBox() {
     setBusy(true);
     try {
       const res = await ask(question);
-      setMessages((m) => [...m, { role: "assistant", text: res.answer || "Sorry, I couldn't find an answer.", sources: res.sources }]);
+      setMessages((m) => [...m, { role: "assistant", text: res.answer || t("chat.noAnswer"), sources: res.sources }]);
     } catch (e) {
-      setMessages((m) => [...m, { role: "assistant", text: "⚠️ Something went wrong reaching the assistant. Please try again." }]);
+      setMessages((m) => [...m, { role: "assistant", text: t("chat.error") }]);
     } finally {
       setBusy(false);
     }
@@ -61,7 +56,7 @@ export default function ChatBox() {
         {busy && (
           <div className="flex justify-start">
             <div className="rounded-2xl bg-white/5 px-4 py-2.5 text-sm text-slate-400 ring-1 ring-white/10">
-              <span className="animate-pulse">Thinking…</span>
+              <span className="animate-pulse">{t("chat.thinking")}</span>
             </div>
           </div>
         )}
@@ -70,7 +65,7 @@ export default function ChatBox() {
 
       {messages.length <= 1 && (
         <div className="flex flex-wrap gap-2 px-4 pb-2">
-          {SUGGESTIONS.map((s) => (
+          {suggestions.map((s) => (
             <button key={s} onClick={() => send(s)}
               className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-slate-300 hover:border-emerald-400/40 hover:text-white">
               {s}
@@ -86,7 +81,7 @@ export default function ChatBox() {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask anything about World Cup 2026…"
+          placeholder={t("chat.placeholder")}
           className="flex-1 rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm outline-none focus:border-emerald-400/50"
         />
         <button
@@ -94,7 +89,7 @@ export default function ChatBox() {
           disabled={busy || !input.trim()}
           className="rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-emerald-950 transition hover:bg-emerald-400 disabled:opacity-40"
         >
-          Send
+          {t("chat.send")}
         </button>
       </form>
     </div>

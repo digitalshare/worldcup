@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Insert teams and matches into Butterbase via the data API (per-row POST)."""
-import json, urllib.request, urllib.parse
+import json, os, urllib.request, urllib.parse
 
 API = "https://api.butterbase.ai/v1/app_g29dn25c99ke"
-DATA = "/Users/cw/work/workshop/worldcup/data"
+DATA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
 
 def req(method, path, body=None):
     url = f"{API}{path}"

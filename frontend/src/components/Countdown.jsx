@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useT } from "../lib/i18n.jsx";
 
 const OPENING = new Date("2026-06-11T19:00:00Z");
 
 export default function Countdown() {
+  const t = useT();
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 1000);
@@ -27,14 +29,14 @@ export default function Countdown() {
   );
 
   if (started) {
-    return <div className="text-emerald-300 font-bold text-lg">🎉 The tournament is underway — kick-off has begun!</div>;
+    return <div className="text-emerald-300 font-bold text-lg">{t("countdown.started")}</div>;
   }
   return (
     <div className="flex items-center gap-2 sm:gap-3">
-      <Box v={d} l="Days" />
-      <Box v={h} l="Hours" />
-      <Box v={m} l="Mins" />
-      <Box v={sec} l="Secs" />
+      <Box v={d} l={t("countdown.days")} />
+      <Box v={h} l={t("countdown.hours")} />
+      <Box v={m} l={t("countdown.mins")} />
+      <Box v={sec} l={t("countdown.secs")} />
     </div>
   );
 }

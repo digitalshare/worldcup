@@ -1,11 +1,14 @@
 import { useMemo, useState } from "react";
 import { useData } from "../lib/store.jsx";
+import { useT, useFmt } from "../lib/i18n.jsx";
 import MatchCard from "../components/MatchCard.jsx";
-import { STAGE_LABEL, dayKey } from "../lib/util";
+import { STAGE_ORDER } from "../lib/util";
 
 export default function Schedule() {
   const { data, maps } = useData();
   const { venueById, teamById } = maps;
+  const t = useT();
+  const fmt = useFmt();
   const [stage, setStage] = useState("all");
   const [group, setGroup] = useState("all");
   const [team, setTeam] = useState("all");
@@ -29,12 +32,12 @@ export default function Schedule() {
     const out = [];
     let cur = null;
     for (const m of filtered) {
-      const k = dayKey(m.kickoff_utc);
+      const k = fmt.dayKey(m.kickoff_utc);
       if (!cur || cur.day !== k) { cur = { day: k, items: [] }; out.push(cur); }
       cur.items.push(m);
     }
     return out;
-  }, [filtered]);
+  }, [filtered, fmt]);
 
   const Select = ({ value, onChange, children }) => (
     <select value={value} onChange={(e) => onChange(e.target.value)}
@@ -46,36 +49,36 @@ export default function Schedule() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">Match Schedule</h1>
-        <span className="text-sm text-slate-400">{filtered.length} of {data.matches.length} matches</span>
+        <h1 className="text-2xl font-bold">{t("schedule.title")}</h1>
+        <span className="text-sm text-slate-400">{t("schedule.count", { shown: filtered.length, total: data.matches.length })}</span>
       </div>
 
       <div className="flex flex-wrap gap-2">
         <Select value={stage} onChange={setStage}>
-          <option value="all">All stages</option>
-          {Object.entries(STAGE_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+          <option value="all">{t("schedule.allStages")}</option>
+          {STAGE_ORDER.map((k) => <option key={k} value={k}>{t(`stage.${k}`)}</option>)}
         </Select>
         <Select value={group} onChange={setGroup}>
-          <option value="all">All groups</option>
-          {groups.map((g) => <option key={g} value={g}>Group {g}</option>)}
+          <option value="all">{t("schedule.allGroups")}</option>
+          {groups.map((g) => <option key={g} value={g}>{t("schedule.group", { letter: g })}</option>)}
         </Select>
         <Select value={team} onChange={setTeam}>
-          <option value="all">All teams</option>
-          {teamOptions.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+          <option value="all">{t("schedule.allTeams")}</option>
+          {teamOptions.map((tm) => <option key={tm.id} value={tm.id}>{tm.name}</option>)}
         </Select>
         <Select value={venue} onChange={setVenue}>
-          <option value="all">All venues</option>
+          <option value="all">{t("schedule.allVenues")}</option>
           {data.venues.map((v) => <option key={v.id} value={v.id}>{v.name}</option>)}
         </Select>
         {(stage !== "all" || group !== "all" || team !== "all" || venue !== "all") && (
           <button onClick={() => { setStage("all"); setGroup("all"); setTeam("all"); setVenue("all"); }}
             className="rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-300 hover:bg-white/5">
-            Clear
+            {t("schedule.clear")}
           </button>
         )}
       </div>
 
-      {byDay.length === 0 && <p className="text-slate-400">No matches match these filters.</p>}
+      {byDay.length === 0 && <p className="text-slate-400">{t("schedule.none")}</p>}
 
       <div className="space-y-6">
         {byDay.map((d) => (

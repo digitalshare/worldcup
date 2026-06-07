@@ -1,13 +1,3 @@
-export const STAGE_LABEL = {
-  group: "Group Stage",
-  r32: "Round of 32",
-  r16: "Round of 16",
-  qf: "Quarterfinal",
-  sf: "Semifinal",
-  third_place: "Third-place playoff",
-  final: "Final",
-};
-
 export const STAGE_ORDER = ["group", "r32", "r16", "qf", "sf", "third_place", "final"];
 
 export const CONFED_COLOR = {
@@ -19,30 +9,39 @@ export const CONFED_COLOR = {
   OFC: "bg-cyan-500/15 text-cyan-300 ring-cyan-500/30",
 };
 
-export function fmtDate(iso) {
+// Date/time formatters. Each accepts an options bag { tz, locale }:
+//   tz     — IANA timezone id, or null/"local" to use the device zone
+//   locale — BCP-47 locale, or undefined for the device default
+// The useFmt() hook (lib/i18n.jsx) binds these to the user's chosen
+// timezone + language so all displayed times follow the selection.
+function zoneOpts(tz, base) {
+  return tz && tz !== "local" ? { ...base, timeZone: tz } : base;
+}
+
+export function fmtDate(iso, { tz, locale } = {}) {
   if (!iso) return "TBD";
-  return new Date(iso).toLocaleDateString(undefined, {
+  return new Date(iso).toLocaleDateString(locale, zoneOpts(tz, {
     weekday: "short", month: "short", day: "numeric",
-  });
+  }));
 }
 
-export function fmtTime(iso) {
+export function fmtTime(iso, { tz, locale } = {}) {
   if (!iso) return "";
-  return new Date(iso).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  return new Date(iso).toLocaleTimeString(locale, zoneOpts(tz, { hour: "numeric", minute: "2-digit" }));
 }
 
-export function fmtDateLong(iso) {
+export function fmtDateLong(iso, { tz, locale } = {}) {
   if (!iso) return "TBD";
-  return new Date(iso).toLocaleString(undefined, {
+  return new Date(iso).toLocaleString(locale, zoneOpts(tz, {
     weekday: "long", month: "long", day: "numeric", hour: "numeric", minute: "2-digit",
-  });
+  }));
 }
 
-export function dayKey(iso) {
+export function dayKey(iso, { tz, locale } = {}) {
   if (!iso) return "TBD";
-  return new Date(iso).toLocaleDateString(undefined, {
+  return new Date(iso).toLocaleDateString(locale, zoneOpts(tz, {
     weekday: "long", month: "long", day: "numeric",
-  });
+  }));
 }
 
 // Resolve the two sides of a match into display objects.

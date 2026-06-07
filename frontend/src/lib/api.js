@@ -10,13 +10,15 @@ async function j(url, opts) {
 export const getRows = (table, qs = "") => j(`${API}/${table}${qs ? `?${qs}` : ""}`);
 
 export async function loadCore() {
-  const [teams, venues, matches, news] = await Promise.all([
+  const [teams, venues, matches, news, history] = await Promise.all([
     getRows("teams", "limit=100&order=group_letter.asc,group_rank.asc"),
     getRows("venues", "limit=100&order=capacity.desc"),
     getRows("matches", "limit=200&order=kickoff_utc.asc"),
     getRows("news", "limit=50&order=published_at.desc"),
+    // Historical World Cup matches power head-to-head; tolerate failure.
+    getRows("history_matches", "limit=2000&order=year.asc").catch(() => []),
   ]);
-  return { teams, venues, matches, news };
+  return { teams, venues, matches, news, history };
 }
 
 export async function ask(question) {

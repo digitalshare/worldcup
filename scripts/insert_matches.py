@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Insert the 104 matches, resolving FK ids from already-inserted teams/venues."""
-import json, urllib.request, urllib.error
+import json, os, urllib.request, urllib.error
 
 API = "https://api.butterbase.ai/v1/app_g29dn25c99ke"
-DATA = "/Users/cw/work/workshop/worldcup/data"
+DATA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
 
 def req(method, path, body=None):
     data = json.dumps(body).encode() if body is not None else None
