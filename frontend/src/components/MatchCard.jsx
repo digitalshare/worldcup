@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Flag from "./Flag.jsx";
-import { StageBadge } from "./Badge.jsx";
-import { sides, isFinished } from "../lib/util";
+import { StageBadge, LiveBadge } from "./Badge.jsx";
+import { sides, isFinished, isLive, hasScore } from "../lib/util";
 import { useT, useFmt } from "../lib/i18n.jsx";
 import { useData } from "../lib/store.jsx";
 
@@ -59,6 +59,8 @@ export default function MatchCard({ match, venue, showStage = false }) {
   const [open, setOpen] = useState(false);
   const { home, away } = sides(match, teamById);
   const finished = isFinished(match);
+  const live = isLive(match);
+  const showScore = finished || (live && hasScore(match));
   const bothKnown = !!(home.team && away.team);
 
   return (
@@ -66,6 +68,8 @@ export default function MatchCard({ match, venue, showStage = false }) {
       <div className="mb-2 flex items-center justify-between text-xs text-slate-400">
         <span>{fmt.date(match.kickoff_utc)} · {fmt.time(match.kickoff_utc)}</span>
         <div className="flex items-center gap-2">
+          {live && <LiveBadge>{t("match.live")}</LiveBadge>}
+          {live && match.minute && <span className="font-semibold tabular-nums text-red-300">{match.minute}</span>}
           {showStage && <StageBadge>{t(`stage.${match.stage}`)}</StageBadge>}
           {match.group_letter && <span className="rounded bg-white/5 px-1.5 py-0.5">{t("match.grpBadge", { letter: match.group_letter })}</span>}
           <span className="font-mono text-slate-500">#{match.match_number}</span>
@@ -73,11 +77,33 @@ export default function MatchCard({ match, venue, showStage = false }) {
       </div>
       <div className="flex items-center gap-3">
         <Side side={home} align="left" />
-        <div className="shrink-0 rounded-md bg-black/30 px-2.5 py-1 text-center font-bold tabular-nums">
-          {finished ? `${match.home_score} – ${match.away_score}` : <span className="text-slate-500">{t("match.vs")}</span>}
+        <div className={`shrink-0 rounded-md px-2.5 py-1 text-center font-bold tabular-nums ${live ? "bg-red-500/15 text-red-300 ring-1 ring-red-500/30" : "bg-black/30"}`}>
+          {showScore ? `${match.home_score} – ${match.away_score}` : <span className="text-slate-500">{t("match.vs")}</span>}
         </div>
         <Side side={away} align="right" />
       </div>
+      {(live || finished) && Array.isArray(match.goals) && match.goals.length > 0 && (
+        <div className="mt-2 grid grid-cols-2 gap-2 border-t border-white/5 pt-2 text-xs">
+          <div className="space-y-0.5">
+            {match.goals.filter((g) => g.side === "home").map((g, i) => (
+              <div key={i} className="flex items-center gap-1 text-slate-300">
+                <span>⚽</span>
+                <span className="tabular-nums text-slate-500">{g.minute}</span>
+                <span className="truncate">{g.player}</span>
+              </div>
+            ))}
+          </div>
+          <div className="space-y-0.5 text-right">
+            {match.goals.filter((g) => g.side === "away").map((g, i) => (
+              <div key={i} className="flex items-center justify-end gap-1 text-slate-300">
+                <span className="truncate">{g.player}</span>
+                <span className="tabular-nums text-slate-500">{g.minute}</span>
+                <span>⚽</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       {venue && (
         <div className="mt-2 truncate text-right text-xs text-slate-500">
           <Link to={`/venues/${venue.id}`} className="hover:text-slate-300">📍 {venue.name}, {venue.city}</Link>
@@ -96,6 +122,12 @@ export default function MatchCard({ match, venue, showStage = false }) {
           {open && <H2HPanel home={home.team} away={away.team} />}
         </>
       )}
+      <Link
+        to={`/matches/${match.id}`}
+        className="mt-2 flex w-full items-center justify-center gap-1 rounded-md bg-emerald-500/10 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-emerald-400/20 transition hover:bg-emerald-500/20"
+      >
+        {t("match.socialBuzz")} →
+      </Link>
     </div>
   );
 }

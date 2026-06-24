@@ -1,7 +1,8 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import { useData } from "./lib/store.jsx";
 import { useT } from "./lib/i18n.jsx";
+import { useAuth } from "./lib/auth.jsx";
 import Home from "./pages/Home.jsx";
 import Schedule from "./pages/Schedule.jsx";
 import Groups from "./pages/Groups.jsx";
@@ -11,6 +12,17 @@ import Venues from "./pages/Venues.jsx";
 import VenueDetail from "./pages/VenueDetail.jsx";
 import Search from "./pages/Search.jsx";
 import Chat from "./pages/Chat.jsx";
+import Login from "./pages/Login.jsx";
+import MatchDetail from "./pages/MatchDetail.jsx";
+
+// Gates the social match-detail route: logged-out users are sent to /login and
+// returned here after authenticating. The rest of the app stays public.
+function Protected({ children }) {
+  const { token } = useAuth();
+  const loc = useLocation();
+  if (!token) return <Navigate to="/login" replace state={{ from: loc.pathname }} />;
+  return children;
+}
 
 export default function App() {
   const { data, error } = useData();
@@ -40,6 +52,8 @@ export default function App() {
             <Route path="/venues/:id" element={<VenueDetail />} />
             <Route path="/search" element={<Search />} />
             <Route path="/chat" element={<Chat />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/matches/:id" element={<Protected><MatchDetail /></Protected>} />
             <Route path="*" element={<Home />} />
           </Routes>
         )}

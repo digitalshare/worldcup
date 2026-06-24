@@ -58,3 +58,11 @@ export function sides(match, teamById) {
 export function isFinished(m) {
   return m.status === "finished" && m.home_score != null && m.away_score != null;
 }
+
+export function isLive(m) {
+  return m.status === "live";
+}
+
+export function hasScore(m) {
+  return m.home_score != null && m.away_score != null;
+}

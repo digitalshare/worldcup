@@ -18,3 +18,13 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+
+# Agent / local tooling (not part of the app)
+.openclaw/
+.mcp.json
+AGENTS.md
+HEARTBEAT.md
+IDENTITY.md
+SOUL.md
+TOOLS.md
+USER.md

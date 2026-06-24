@@ -1,5 +1,6 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useSettings, useT, TZ_OPTIONS } from "../lib/i18n.jsx";
+import { useAuth } from "../lib/auth.jsx";
 
 const links = [
   ["/", "nav.home"],
@@ -14,6 +15,8 @@ const links = [
 export default function Navbar() {
   const t = useT();
   const { lang, setLang, tz, setTz } = useSettings();
+  const { user, token, logout } = useAuth();
+  const nav = useNavigate();
 
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-[#0a0f1d]/85 backdrop-blur">
@@ -70,6 +73,22 @@ export default function Navbar() {
               中文
             </button>
           </div>
+          {token ? (
+            <button
+              onClick={() => { logout(); nav("/"); }}
+              title={user?.display_name || user?.email || ""}
+              className="shrink-0 rounded-lg border border-white/10 px-2 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-white/5"
+            >
+              {t("social.auth.logout")}
+            </button>
+          ) : (
+            <NavLink
+              to="/login"
+              className="shrink-0 rounded-lg border border-white/10 px-2 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-white/5"
+            >
+              {t("social.auth.login")}
+            </NavLink>
+          )}
         </div>
       </nav>
     </header>
